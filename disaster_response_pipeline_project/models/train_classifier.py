@@ -66,19 +66,19 @@ def build_model():
     Returns:
         pipeline: Pipeline
     '''
-    pipeline_ada = Pipeline([
+    pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer = tokenize)),
         ('tfidf', TfidfTransformer()),
-        ('clf',  MultiOutputClassifier(AdaBoostClassifier()))
+        ('clf',  MultiOutputClassifier(RandomForestClassifier()))
     ])
 
-    parameters_ada = {
-            'tfidf__use_idf': (True, False),
-            'clf__estimator__n_estimators': [50, 60, 70]
-    }
+    parameters = {
+        'tfidf__use_idf': (True, False),
+        'clf__estimator__n_estimators': [10, 20]
+}
 
-    cva = GridSearchCV(pipeline_ada, parameters_ada)
-    return cva
+    cv = GridSearchCV(pipeline, param_grid =parameters)
+    return cv
 
 
 def evaluate_model(model, X_test, Y_test):
