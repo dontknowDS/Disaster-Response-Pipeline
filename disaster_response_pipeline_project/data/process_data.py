@@ -13,8 +13,8 @@ def load_data(messages_filepath, categories_filepath):
     Returns:
         pandas.df
     '''
-    messages = pd.read_csv('messages_filepath')
-    categories = pd.read_csv('categories_filepath')
+    messages = pd.read_csv(messages_filepath)
+    categories = pd.read_csv(categories_filepath)
     df=messages.merge(categories, how='left', on=['id'])
     return df
 
@@ -56,7 +56,7 @@ def save_data(df, database_filename):
     Returns:
         None
     '''
-    engine = create_engine('sqlite:///InsertDatabaseName.db')
+    engine = create_engine('sqlite:///{}'.format(database_filename))
     df.to_sql(database_filename, engine, index=False)
     pass  
 

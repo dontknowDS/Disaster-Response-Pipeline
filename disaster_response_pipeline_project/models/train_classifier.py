@@ -32,14 +32,14 @@ def load_data(database_filepath):
         None
     '''
     # load data from database
-    engine = create_engine(database_filepath)
-    df = pd.read_sql("SELECT * FROM disaster_msg_categories",engine)
-
+    engine = create_engine('sqlite:///{}'.format(database_filepath))
+    #df = pd.read_sql("SELECT * FROM disaster_msg_categories",engine)
+    df = pd.read_sql_table(database_filepath, engine)
 
     Y = df.drop(['id', 'message', 'original', 'genre', 'related'], axis=1
            ).values
     X = df['message'].values
-    pass
+    return X, Y, 
 
 
 def tokenize(text):
@@ -81,14 +81,14 @@ def build_model():
     return cva
 
 
-def evaluate_model(model, X_test, Y_test, category_names):
+def evaluate_model(model, X_test, Y_test):
     '''
     this function displays the evaluation of the model
     Args:
         model: model
         X_test: list
         Y_test: list
-        category_names: string
+        
     Returns: 
         None
     '''
@@ -112,7 +112,7 @@ def main():
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
-        X, Y, category_names = load_data(database_filepath)
+        X, Y = load_data(database_filepath)
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
         print('Building model...')
@@ -122,7 +122,7 @@ def main():
         model.fit(X_train, Y_train)
         
         print('Evaluating model...')
-        evaluate_model(model, X_test, Y_test, category_names)
+        evaluate_model(model, X_test, Y_test)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
         save_model(model, model_filepath)
