@@ -43,7 +43,13 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
-    
+    catg_nam = df.iloc[:, 4:].columns
+    bol = df.iloc[:, 4:] != 0
+    cat_bol = bol.sum().values
+
+    sum_cat = df.iloc[:, 4:].sum()
+    top_cat = sum_cat.sort_values(ascending=False)[1:11]
+    top_cat_names = list(top_cat.index)
     # Get distribution from seperate categories
     category = list(df.columns[4:])
     category_counts = []
@@ -78,13 +84,31 @@ def index():
         {
             'data': [
                 Bar(
-                    x=category,
-                    y=category_counts
+                    x=catg_nam,
+                    y=cat_bol
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Categories',
+                'title': 'Message Categories distribution',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Categories"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=top_cat_names,
+                    y=top_cat
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 10 Categories',
                 'yaxis': {
                     'title': "Count"
                 },
