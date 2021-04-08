@@ -45,6 +45,8 @@ def clean_data(df):
     df=pd.concat([df_no_old_categories, categories], axis=1)
     #remove duplicates
     df=df.drop_duplicates()
+    #remove related==2 rows
+    categories = categories.drop(categories[categories.related == 2].index)
     return df
 
 def save_data(df, database_filename):
